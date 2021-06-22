@@ -1,0 +1,32 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.4.0'
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Kotlin stdlib
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.4.0'
+    // Kotlin Spark API
+    implementation group: 'org.apache.spark', name: 'spark-core_2.12', version: '2.4.8'
+    implementation 'org.jetbrains.kotlinx.spark:kotlin-spark-api-3.0.0_2.12:1.0.0-preview1'  // Apache Spark
+    implementation group: 'org.apache.spark', name: 'spark-sql_2.12', version: '2.4.8'
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = '1.8'
+}
+
+shadowJar {
+    dependencies {
+        exclude(dependency {
+            it.moduleGroup == 'org.apache.spark' || it.moduleGroup == "org.scala-lang"
+        })
+    }
+}
