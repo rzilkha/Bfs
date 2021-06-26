@@ -15,6 +15,7 @@ import org.apache.spark.sql.types.DataTypes
 import org.apache.spark.sql.types.StructField
 import org.apache.spark.sql.types.StructType
 import org.jetbrains.kotlinx.spark.api.flatMap
+import java.lang.Thread.sleep
 
 const val DONE = 2
 const val PENDING = 0
@@ -62,9 +63,9 @@ fun main(args: Array<String>) {
         .add(StructField.apply("status", DataTypes.IntegerType, true, null))
 
 
-    var data = dataframe.select(col("name"), col("friend"))
+    var data = dataframe.select(col("name"), col("connection"))
         .groupBy(col("name"))
-        .agg(collect_set(col("friend")).`as`("connections"))
+        .agg(collect_set(col("connection")).`as`("connections"))
         .withColumn(
             "distance",
             ifElseColumn("name", source, 0, null)
@@ -98,6 +99,7 @@ fun main(args: Array<String>) {
         .write()
         .mode("overwrite")
         .csv("output.csv")
+    sleep(10000)
     sparkSession.close()
 }
 
